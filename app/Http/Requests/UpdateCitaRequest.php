@@ -14,7 +14,7 @@ class UpdateCitaRequest extends ApiFormRequest
             'inicio' => ['required', 'date'],
             'fin' => ['required', 'date', 'after:inicio'],
             'motivo' => ['required', 'string', 'max:255'],
-            'estado' => ['required', Rule::in(['pendiente', 'confirmada', 'cancelada', 'atendida'])],
+            'estado' => ['nullable', Rule::in(['pendiente', 'confirmada', 'cancelada', 'atendida'])],
         ];
     }
 }
