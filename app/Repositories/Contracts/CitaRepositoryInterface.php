@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CitaRepositoryInterface
 {
-    public function all(): Collection;
+    public function all(array $filters = []): Collection;
 
     public function findOrFail(int $id): Cita;
 

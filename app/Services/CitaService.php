@@ -14,9 +14,9 @@ class CitaService
     {
     }
 
-    public function listar(): Collection
+    public function listar(array $filters = []): Collection
     {
-        return $this->citas->all();
+        return $this->citas->all($filters);
     }
 
     public function detalle(int $id): Cita
