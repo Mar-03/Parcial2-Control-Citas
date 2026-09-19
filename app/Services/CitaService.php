@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ConflictoHorarioException;
 use App\Models\Cita;
 use App\Models\Doctor;
 use App\Models\Paciente;
@@ -26,17 +27,28 @@ class CitaService
 
     public function crear(array $data): Cita
     {
+        $this->validarDisponibilidad($data['doctor_id'], $data['inicio'], $data['fin']);
+
         return $this->citas->create($data);
     }
 
     public function actualizar(int $id, array $data): Cita
     {
+        $this->validarDisponibilidad($data['doctor_id'], $data['inicio'], $data['fin'], $id);
+
         return $this->citas->update($this->detalle($id), $data);
     }
 
     public function cambiarEstado(int $id, array $data): Cita
     {
-        return $this->actualizar($id, $data);
+        return $this->citas->update($this->detalle($id), $data);
+    }
+
+    private function validarDisponibilidad(int $doctorId, $inicio, $fin, ?int $exceptId = null): void
+    {
+        if ($this->citas->existeConflicto($doctorId, $inicio, $fin, $exceptId)) {
+            throw new ConflictoHorarioException();
+        }
     }
 
     public function doctores(): Collection

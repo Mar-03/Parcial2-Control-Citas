@@ -25,6 +25,17 @@ class CitaRepository implements CitaRepositoryInterface
         return Cita::query()->with(['paciente', 'doctor'])->findOrFail($id);
     }
 
+    public function existeConflicto(int $doctorId, $inicio, $fin, ?int $exceptId = null): bool
+    {
+        return Cita::query()
+            ->where('doctor_id', $doctorId)
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->where('inicio', '<', $fin)
+            ->where('fin', '>', $inicio)
+            ->when($exceptId, fn ($query) => $query->where('id', '!=', $exceptId))
+            ->exists();
+    }
+
     public function create(array $data): Cita
     {
         return Cita::query()->create($data)->load(['paciente', 'doctor']);
